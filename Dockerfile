@@ -2,13 +2,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Update and install dependencies
+# Install dependencies
 RUN apt-get update && \
-    apt-get -y install git libgomp1 && \
-    pip install --upgrade pip setuptools
+    apt-get -y install git libgomp1 cmake && \
+    pip install --upgrade pip setuptools && \
+    pip install numpy pyyaml mkl mkl-include setuptools cmake cffi typing_extensions
 
-# Install PyTorch, torchvision, and torchaudio compatible with CUDA 11.8
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+# Clone PyTorch and build
+RUN git clone --recursive https://github.com/pytorch/pytorch && \
+    cd pytorch && \
+    git checkout v1.13.0 && \
+    python setup.py install
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
