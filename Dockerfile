@@ -1,5 +1,5 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
-
+# Start from NVIDIA CUDA with cuDNN
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
 
 WORKDIR /app
 
@@ -8,11 +8,11 @@ RUN apt-get update && \
     apt-get -y install git libgomp1 && \
     pip install --upgrade pip setuptools
 
-# Install PyTorch, torchvision, and torchaudio compatible with CUDA 11.8
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+# You can skip installing PyTorch, torchvision, and torchaudio here as they are already part of the CUDA image
 
+# Rest of your Dockerfile
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
