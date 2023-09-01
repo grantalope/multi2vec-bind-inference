@@ -2,12 +2,13 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Update and install dependencies
 RUN apt-get update && \
     apt-get -y install git libgomp1 && \
     pip install --upgrade pip setuptools
 
-# Install a compatible PyTorch version
-RUN pip install torch==1.13.0+cu118 -f https://download.pytorch.org/whl/cu118/torch_stable.html
+# Install PyTorch, torchvision, and torchaudio compatible with CUDA 11.8
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
@@ -20,4 +21,3 @@ RUN ./download.py
 
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["uvicorn app:app --host 0.0.0.0 --port 8080"]
-
